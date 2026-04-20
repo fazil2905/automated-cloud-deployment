@@ -7,11 +7,7 @@ pipeline {
 
     stages {
 
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main', 'https://github.com/fazil2905/automated-cloud-deployment.git'
-            }
-        }
+        
 
         stage('Build Docker Image') {
             steps {
