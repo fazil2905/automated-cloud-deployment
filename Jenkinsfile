@@ -7,7 +7,11 @@ pipeline {
 
     stages {
 
-        
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/fazil2905/automated-cloud-deployment.git'
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
@@ -22,7 +26,11 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                    bat '''
+                    echo %DOCKER_PASS%>pass.txt
+                    type pass.txt | docker login -u %DOCKER_USER% --password-stdin
+                    del pass.txt
+                    '''
                 }
             }
         }
