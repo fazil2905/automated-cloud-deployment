@@ -36,6 +36,28 @@ pipeline {
             }
         }
 
+        // 🔥 NEW STAGE (AUTO DEPLOY TO ECS)
+        stage('Force ECS Deploy') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'aws-creds',
+                    usernameVariable: 'AWS_ACCESS_KEY_ID',
+                    passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                )]) {
+                    bat '''
+                    set AWS_ACCESS_KEY_ID=%AWS_ACCESS_KEY_ID%
+                    set AWS_SECRET_ACCESS_KEY=%AWS_SECRET_ACCESS_KEY%
+                    set AWS_DEFAULT_REGION=%AWS_DEFAULT_REGION%
+
+                    aws ecs update-service ^
+                    --cluster devops-cluster ^
+                    --service devops-service ^
+                    --force-new-deployment
+                    '''
+                }
+            }
+        }
+
         stage('Terraform Init') {
             when {
                 changeset "terraform/**"
