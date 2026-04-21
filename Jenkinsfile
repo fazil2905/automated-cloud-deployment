@@ -36,7 +36,6 @@ pipeline {
             }
         }
 
-        // 🔥 NEW STAGE (AUTO DEPLOY TO ECS)
         stage('Force ECS Deploy') {
             steps {
                 withCredentials([usernamePassword(
@@ -48,6 +47,18 @@ pipeline {
                     set AWS_ACCESS_KEY_ID=%AWS_ACCESS_KEY_ID%
                     set AWS_SECRET_ACCESS_KEY=%AWS_SECRET_ACCESS_KEY%
                     set AWS_DEFAULT_REGION=%AWS_DEFAULT_REGION%
+
+                    aws ecs describe-task-definition ^
+                    --task-definition devops-task ^
+                    --query taskDefinition > task.json
+
+                    powershell -Command ^
+                    "(Get-Content task.json) ^
+                    -replace 'fazil2905/devops-app:latest','fazil2905/devops-app:latest' ^
+                    | Set-Content new-task.json"
+
+                    aws ecs register-task-definition ^
+                    --cli-input-json file://new-task.json
 
                     aws ecs update-service ^
                     --cluster devops-cluster ^
