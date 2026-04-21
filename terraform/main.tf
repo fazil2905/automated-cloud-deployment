@@ -62,11 +62,16 @@ resource "aws_ecs_cluster" "cluster" {
   name = "devops-cluster"
 }
 
+# Random suffix generator
+resource "random_id" "suffix" {
+  byte_length = 2
+}
+
 # ----------------------------
 # 🔑 IAM Role for ECS
 # ----------------------------
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecsTaskExecutionRole"
+  name = "ecsTaskExecutionRole-${random_id.suffix.hex}"
 
   assume_role_policy = jsonencode({
     Version = "2008-10-17"
