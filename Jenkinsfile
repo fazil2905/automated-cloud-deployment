@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         IMAGE = "fazil2905/devops-app"
+        AWS_DEFAULT_REGION = "us-east-1"
     }
 
     stages {
@@ -21,9 +22,7 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     bat '''
-                    echo %DOCKER_PASS%>pass.txt
-                    type pass.txt | docker login -u %DOCKER_USER% --password-stdin
-                    del pass.txt
+                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
                     '''
                 }
             }
@@ -36,6 +35,9 @@ pipeline {
         }
 
         stage('Terraform Init') {
+            when {
+                changeset "terraform/**"
+            }
             steps {
                 dir('terraform') {
                     bat 'terraform init'
@@ -44,6 +46,9 @@ pipeline {
         }
 
         stage('Terraform Apply (Deploy to ECS)') {
+            when {
+                changeset "terraform/**"
+            }
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'aws-creds',
@@ -54,6 +59,7 @@ pipeline {
                         bat '''
                         set AWS_ACCESS_KEY_ID=%AWS_ACCESS_KEY_ID%
                         set AWS_SECRET_ACCESS_KEY=%AWS_SECRET_ACCESS_KEY%
+                        set AWS_DEFAULT_REGION=%AWS_DEFAULT_REGION%
                         terraform apply -auto-approve
                         '''
                     }
