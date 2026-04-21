@@ -7,24 +7,48 @@
 
     <title>Anzee Tech Solution</title>
 
-    <!-- KEEP THIS (important for React app) -->
     <script type="module" crossorigin src="assets/index-DMeAarGx.js"></script>
     <link rel="stylesheet" crossorigin href="assets/index-CnYlgHS3.css">
+
+    <style>
+        .logo-container {
+            position: fixed;
+            top: 10px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container img {
+            height: 45px;
+            width: auto;
+        }
+
+        .hero-image {
+            position: fixed;
+            top: 120px;
+            right: 40px;
+            z-index: 1;
+        }
+
+        .hero-image img {
+            width: 380px;
+            max-width: 40vw;
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- 🔥 LOGO (top left) -->
-    <div style="position:absolute; top:20px; left:20px; z-index:1000;">
-        <img src="assets/logo.jpg" alt="logo" width="120">
+    <div class="logo-container">
+        <img src="assets/logo.jpg" alt="logo">
     </div>
 
-    <!-- 🔥 RIGHT SIDE IMAGE -->
-    <div style="position:absolute; top:150px; right:50px; z-index:1000;">
-        <img src="assets/hero.jpg" alt="hero" width="400">
+    <div class="hero-image">
+        <img src="assets/hero.jpg" alt="hero">
     </div>
 
-    <!-- React App -->
     <div id="root"></div>
 
 </body>
